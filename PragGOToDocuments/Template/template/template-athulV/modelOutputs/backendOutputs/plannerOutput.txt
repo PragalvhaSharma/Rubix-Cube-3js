@@ -1,0 +1,302 @@
+
+### Entities and Relationships
+
+#### **Table Name: User**
+**Attributes**:
+- id (Primary Key)
+- username (Unique)
+- email (Unique)
+- password (Hashed)
+- first_name
+- last_name
+- role (e.g., admin, assembler, glazer, installer)
+- date_joined
+- last_login
+
+**Relationships To other tables**:
+- One-to-Many with PurchaseOrder (One User can create many Purchase Orders)
+- One-to-Many with WorkOrder (One User can be assigned many Work Orders)
+
+#### **Table Name: PurchaseOrder**
+**Attributes**:
+- id (Primary Key)
+- created_by (Foreign Key to User)
+- order_date
+- supplier_name
+- total_amount
+- status (e.g., pending, completed, canceled)
+
+**Relationships To other tables**:
+- Many-to-One with User (Many Purchase Orders created by one User)
+- One-to-Many with PurchaseOrderItem (One Purchase Order can have many items)
+
+#### **Table Name: PurchaseOrderItem**
+**Attributes**:
+- id (Primary Key)
+- purchase_order (Foreign Key to PurchaseOrder)
+- item_name
+- quantity
+- unit_price
+- total_price
+
+**Relationships To other tables**:
+- Many-to-One with PurchaseOrder (Many PurchaseOrderItems belong to one PurchaseOrder)
+
+#### **Table Name: Frame**
+**Attributes**:
+- id (Primary Key)
+- name
+- description
+- material
+- dimensions
+- stock_quantity
+
+**Relationships To other tables**:
+- One-to-Many with AssemblyTask (One Frame can be assembled many times)
+- One-to-Many with GlazingTask (One Frame can be glazed many times)
+- One-to-Many with InstallationTask (One Frame can be installed many times)
+
+#### **Table Name: AssemblyTask**
+**Attributes**:
+- id (Primary Key)
+- frame (Foreign Key to Frame)
+- user (Foreign Key to User)
+- start_time
+- end_time
+- duration
+- status (e.g., pending, completed)
+
+**Relationships To other tables**:
+- Many-to-One with Frame (Many AssemblyTasks for one Frame)
+- Many-to-One with User (Many AssemblyTasks performed by one User)
+
+#### **Table Name: GlazingTask**
+**Attributes**:
+- id (Primary Key)
+- frame (Foreign Key to Frame)
+- user (Foreign Key to User)
+- start_time
+- end_time
+- duration
+- status (e.g., pending, completed)
+
+**Relationships To other tables**:
+- Many-to-One with Frame (Many GlazingTasks for one Frame)
+- Many-to-One with User (Many GlazingTasks performed by one User)
+
+#### **Table Name: InstallationTask**
+**Attributes**:
+- id (Primary Key)
+- frame (Foreign Key to Frame)
+- user (Foreign Key to User)
+- start_time
+- end_time
+- duration
+- status (e.g., pending, completed)
+
+**Relationships To other tables**:
+- Many-to-One with Frame (Many InstallationTasks for one Frame)
+- Many-to-One with User (Many InstallationTasks performed by one User)
+
+#### **Table Name: WorkOrder**
+**Attributes**:
+- id (Primary Key)
+- assigned_to (Foreign Key to User)
+- frame (Foreign Key to Frame)
+- description
+- status (e.g., pending, completed, canceled)
+- created_at
+- updated_at
+
+**Relationships To other tables**:
+- Many-to-One with User (Many WorkOrders assigned to one User)
+- Many-to-One with Frame (Many WorkOrders for one Frame)
+
+### Additional Considerations
+- **Authentication and Authorization**: Include necessary tables and relationships for managing JWT tokens or token-based authentication. This would typically involve a separate table for storing tokens with relationships to the User table.
+- **Error Handling**: Ensure that all tables have appropriate constraints to handle errors (e.g., NOT NULL, UNIQUE).
+- **Scalability**: Ensure indexes on frequently queried fields (e.g., username, email in User table).
+- **Data Integrity**: Use foreign key constraints to maintain data integrity across related tables.
+
+This design ensures that the ERP system is scalable, maintains data integrity, and adheres to the requirements outlined in the PageByPage Plan.
+### API Endpoints
+
+#### Dashboard Statistics
+
+1. **Endpoint:** `/api/statistics/orders`
+   - **HTTP Method:** GET
+   - **Business Logic:**
+     - Authenticate the user using JWT or Token-based authentication.
+     - Fetch order statistics from the database using Django ORM.
+     - Aggregate data to compute total orders, pending orders, completed orders, etc.
+     - Serialize the aggregated data using Django REST Framework serializers.
+     - Return the serialized data in JSON format.
+
+2. **Endpoint:** `/api/statistics/frames`
+   - **HTTP Method:** GET
+   - **Business Logic:**
+     - Authenticate the user using JWT or Token-based authentication.
+     - Fetch frame-related statistics from the database using Django ORM.
+     - Aggregate data to compute total frames, frames in stock, frames assembled, glazed, and installed.
+     - Serialize the aggregated data using Django REST Framework serializers.
+     - Return the serialized data in JSON format.
+
+3. **Endpoint:** `/api/statistics/workorders`
+   - **HTTP Method:** GET
+   - **Business Logic:**
+     - Authenticate the user using JWT or Token-based authentication.
+     - Fetch work order statistics from the database using Django ORM.
+     - Aggregate data to compute total work orders, pending work orders, completed work orders, etc.
+     - Serialize the aggregated data using Django REST Framework serializers.
+     - Return the serialized data in JSON format.
+
+#### Purchase Order Management
+
+4. **Endpoint:** `/api/purchase-orders`
+   - **HTTP Method:** POST
+   - **Business Logic:**
+     - Authenticate the user using JWT or Token-based authentication.
+     - Validate incoming purchase order data using Django REST Framework serializers.
+     - Create a new purchase order record in the database using Django ORM.
+     - Serialize the newly created purchase order data.
+     - Return the serialized data in JSON format.
+
+5. **Endpoint:** `/api/purchase-orders`
+   - **HTTP Method:** GET
+   - **Business Logic:**
+     - Authenticate the user using JWT or Token-based authentication.
+     - Fetch all purchase orders from the database using Django ORM.
+     - Serialize the fetched purchase order data.
+     - Return the serialized data in JSON format.
+
+6. **Endpoint:** `/api/purchase-orders/export`
+   - **HTTP Method:** GET
+   - **Business Logic:**
+     - Authenticate the user using JWT or Token-based authentication.
+     - Fetch all purchase orders from the database using Django ORM.
+     - Convert the fetched data into CSV format using Django's CSV utilities.
+     - Return the CSV file for download.
+
+#### Assembly Module
+
+7. **Endpoint:** `/api/assembly`
+   - **HTTP Method:** POST
+   - **Business Logic:**
+     - Authenticate the user using JWT or Token-based authentication.
+     - Validate incoming assembly task data using Django REST Framework serializers.
+     - Create a new assembly task record in the database using Django ORM.
+     - Serialize the newly created assembly task data.
+     - Return the serialized data in JSON format.
+
+8. **Endpoint:** `/api/frames`
+   - **HTTP Method:** GET
+   - **Business Logic:**
+     - Authenticate the user using JWT or Token-based authentication.
+     - Fetch all available frames from the database using Django ORM.
+     - Serialize the fetched frame data.
+     - Return the serialized data in JSON format.
+
+#### Glazing Module
+
+9. **Endpoint:** `/api/glazing`
+   - **HTTP Method:** POST
+   - **Business Logic:**
+     - Authenticate the user using JWT or Token-based authentication.
+     - Validate incoming glazing task data using Django REST Framework serializers.
+     - Create a new glazing task record in the database using Django ORM.
+     - Serialize the newly created glazing task data.
+     - Return the serialized data in JSON format.
+
+10. **Endpoint:** `/api/frames`
+    - **HTTP Method:** GET
+    - **Business Logic:**
+      - Authenticate the user using JWT or Token-based authentication.
+      - Fetch all available frames from the database using Django ORM.
+      - Serialize the fetched frame data.
+      - Return the serialized data in JSON format.
+
+#### Installation Module
+
+11. **Endpoint:** `/api/installation`
+    - **HTTP Method:** POST
+    - **Business Logic:**
+      - Authenticate the user using JWT or Token-based authentication.
+      - Validate incoming installation task data using Django REST Framework serializers.
+      - Create a new installation task record in the database using Django ORM.
+      - Serialize the newly created installation task data.
+      - Return the serialized data in JSON format.
+
+12. **Endpoint:** `/api/frames`
+    - **HTTP Method:** GET
+    - **Business Logic:**
+      - Authenticate the user using JWT or Token-based authentication.
+      - Fetch all available frames from the database using Django ORM.
+      - Serialize the fetched frame data.
+      - Return the serialized data in JSON format.
+
+#### Work Order Management
+
+13. **Endpoint:** `/api/work-orders`
+    - **HTTP Method:** POST
+    - **Business Logic:**
+      - Authenticate the user using JWT or Token-based authentication.
+      - Validate incoming work order data using Django REST Framework serializers.
+      - Create a new work order record in the database using Django ORM.
+      - Serialize the newly created work order data.
+      - Return the serialized data in JSON format.
+
+14. **Endpoint:** `/api/work-orders`
+    - **HTTP Method:** GET
+    - **Business Logic:**
+      - Authenticate the user using JWT or Token-based authentication.
+      - Fetch all work orders from the database using Django ORM.
+      - Serialize the fetched work order data.
+      - Return the serialized data in JSON format.
+
+15. **Endpoint:** `/api/work-orders/:id`
+    - **HTTP Method:** PATCH
+    - **Business Logic:**
+      - Authenticate the user using JWT or Token-based authentication.
+      - Validate incoming data for updating work order status using Django REST Framework serializers.
+      - Update the work order status in the database using Django ORM.
+      - Serialize the updated work order data.
+      - Return the serialized data in JSON format.
+
+### Authentication and Authorization
+
+16. **Endpoint:** `/api/auth/login`
+    - **HTTP Method:** POST
+    - **Business Logic:**
+      - Validate incoming login data using Django REST Framework serializers.
+      - Authenticate user credentials.
+      - Generate JWT token upon successful authentication.
+      - Return the JWT token in JSON format.
+
+17. **Endpoint:** `/api/auth/register`
+    - **HTTP Method:** POST
+    - **Business Logic:**
+      - Validate incoming registration data using Django REST Framework serializers.
+      - Create a new user record in the database using Django ORM.
+      - Hash the user's password before storing it.
+      - Serialize the newly created user data.
+      - Return the serialized data in JSON format.
+
+18. **Endpoint:** `/api/auth/logout`
+    - **HTTP Method:** POST
+    - **Business Logic:**
+      - Invalidate the user's JWT token.
+      - Return a success message in JSON format.
+
+### Error Handling
+
+- Ensure that all API endpoints return appropriate HTTP status codes and error messages.
+- Use Django REST Framework's exception handling classes to handle common errors (e.g., 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error).
+- Implement custom exception handling for business-specific errors.
+
+### Testing
+
+- Write unit tests for each API endpoint using Django's test framework.
+- Use Postman or similar tools for integration testing to ensure endpoints work as expected.
+- Ensure that all endpoints are secure and can only be accessed by authenticated users where required.
+
+This detailed plan ensures a robust backend structure for the ERP system, aligning with the frontend requirements and providing sufficient information to create the necessary views.

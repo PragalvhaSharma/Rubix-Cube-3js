@@ -1,0 +1,1029 @@
+
+***File Name***: src/pages/ClientOverview.js
+```javascript
+import React, { useState, useEffect } from 'react';
+import ClientTable from '../components/ClientTable';
+import SortFilterControls from '../components/SortFilterControls';
+
+const ClientOverview = () => {
+    const [clients, setClients] = useState([]);
+    const [filteredClients, setFilteredClients] = useState([]);
+
+    useEffect(() => {
+        // Fetch clients data from API or props
+        const fetchData = async () => {
+            const response = await fetch('/api/clients');
+            const data = await response.json();
+            setClients(data);
+            setFilteredClients(data);
+        };
+        fetchData();
+    }, []);
+
+    const onSortFilterChange = (sortedFilteredData) => {
+        setFilteredClients(sortedFilteredData);
+    };
+
+    return (
+        <div className="client-overview">
+            <header className="page-header">
+                <h1>Client Overview</h1>
+            </header>
+            <SortFilterControls clients={clients} onChange={onSortFilterChange} />
+            <ClientTable clients={filteredClients} />
+            <footer className="page-footer">
+                <p>Company Information and Links</p>
+            </footer>
+        </div>
+    );
+};
+
+export default ClientOverview;
+```
+
+***File Name***: src/components/ClientTable.js
+```javascript
+import React from 'react';
+import ClientRow from './ClientRow';
+
+const ClientTable = ({ clients }) => {
+    return (
+        <table className="client-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Recent Interactions</th>
+                    <th>Contract Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {clients.map(client => (
+                    <ClientRow key={client.id} client={client} />
+                ))}
+            </tbody>
+        </table>
+    );
+};
+
+export default ClientTable;
+```
+
+***File Name***: src/components/ClientRow.js
+```javascript
+import React from 'react';
+import ClientIndicators from './ClientIndicators';
+
+const ClientRow = ({ client }) => {
+    return (
+        <tr className="client-row">
+            <td>{client.name}</td>
+            <td>{client.status}</td>
+            <td>{client.recentInteractions}</td>
+            <td>
+                {client.contractDetails}
+                <ClientIndicators client={client} />
+            </td>
+        </tr>
+    );
+};
+
+export default ClientRow;
+```
+
+***File Name***: src/components/ClientIndicators.js
+```javascript
+import React from 'react';
+import Tooltip from './Tooltip';
+
+const ClientIndicators = ({ client }) => {
+    const hasUpcomingMeeting = client.meetingDate && new Date(client.meetingDate) > new Date();
+    const isContractRenewing = client.contractRenewalDate && new Date(client.contractRenewalDate) > new Date();
+
+    return (
+        <div className="client-indicators">
+            {hasUpcomingMeeting && (
+                <Tooltip text="Upcoming Meeting">
+                    <span className="indicator meeting-indicator">📅</span>
+                </Tooltip>
+            )}
+            {isContractRenewing && (
+                <Tooltip text="Contract Renewing">
+                    <span className="indicator renewal-indicator">🔄</span>
+                </Tooltip>
+            )}
+        </div>
+    );
+};
+
+export default ClientIndicators;
+```
+
+***File Name***: src/components/SortFilterControls.js
+```javascript
+import React, { useState, useEffect } from 'react';
+
+const SortFilterControls = ({ clients, onChange }) => {
+    const [sortCriteria, setSortCriteria] = useState('');
+    const [filterCriteria, setFilterCriteria] = useState('');
+
+    useEffect(() => {
+        let sortedFilteredClients = [...clients];
+        
+        if (filterCriteria) {
+            sortedFilteredClients = sortedFilteredClients.filter(client => client.status === filterCriteria);
+        }
+
+        if (sortCriteria) {
+            sortedFilteredClients.sort((a, b) => {
+                if (a[sortCriteria] < b[sortCriteria]) return -1;
+                if (a[sortCriteria] > b[sortCriteria]) return 1;
+                return 0;
+            });
+        }
+        
+        onChange(sortedFilteredClients);
+    }, [sortCriteria, filterCriteria, clients, onChange]);
+
+    return (
+        <div className="sort-filter-controls">
+            <select onChange={(e) => setSortCriteria(e.target.value)}>
+                <option value="">Sort By</option>
+                <option value="name">Name</option>
+                <option value="status">Status</option>
+            </select>
+            <select onChange={(e) => setFilterCriteria(e.target.value)}>
+                <option value="">Filter By Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+        </div>
+    );
+};
+
+export default SortFilterControls;
+```
+
+***File Name***: src/components/Tooltip.js
+```javascript
+import React from 'react';
+
+const Tooltip = ({ text, children }) => {
+    return (
+        <span className="tooltip-container">
+            {children}
+            <span className="tooltip-text">{text}</span>
+        </span>
+    );
+};
+
+export default Tooltip;
+```
+
+***File Name***: src/styles/ClientOverview.css
+```css
+.client-overview {
+    padding: 20px;
+}
+
+.page-header, .page-footer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.client-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.client-table th, .client-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.client-table th {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.client-row:hover {
+    background-color: #f1f1f1;
+}
+
+.client-indicators {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.indicator {
+    margin-left: 5px;
+}
+
+.sort-filter-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; 
+    left: 50%; 
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+```
+***File Name***: src/CRM/InteractionHistory/InteractionHistory.js
+```javascript
+import React, { useState, useEffect } from 'react';
+import InteractionMetrics from './InteractionMetrics';
+import InteractionChart from './InteractionChart';
+import FilterControls from './FilterControls';
+import './InteractionHistory.css';
+
+const InteractionHistory = () => {
+  const [interactionData, setInteractionData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [filters, setFilters] = useState({ client: '', type: '', dateRange: { start: null, end: null } });
+
+  useEffect(() => {
+    // Fetch interaction data
+    fetch('/api/interactions')
+      .then(response => response.json())
+      .then(data => setInteractionData(data));
+  }, []);
+
+  useEffect(() => {
+    // Apply filters to interaction data
+    let filtered = interactionData;
+    if (filters.client) filtered = filtered.filter(item => item.client === filters.client);
+    if (filters.type) filtered = filtered.filter(item => item.type === filters.type);
+    if (filters.dateRange.start && filters.dateRange.end) {
+      filtered = filtered.filter(item => new Date(item.date) >= new Date(filters.dateRange.start) && new Date(item.date) <= new Date(filters.dateRange.end));
+    }
+    setFilteredData(filtered);
+  }, [filters, interactionData]);
+
+  return (
+    <div className="interaction-history">
+      <header>
+        <h1>Interaction History</h1>
+        <p>View and analyze your client interactions</p>
+        <button onClick={() => setFilters({ client: '', type: '', dateRange: { start: null, end: null } })}>Reset Filters</button>
+      </header>
+      <FilterControls filters={filters} setFilters={setFilters} />
+      <InteractionMetrics data={filteredData} />
+      <InteractionChart data={filteredData} />
+    </div>
+  );
+};
+
+export default InteractionHistory;
+```
+
+***File Name***: src/CRM/InteractionHistory/InteractionMetrics.js
+```javascript
+import React from 'react';
+import { ProgressBar } from 'react-bootstrap';
+import './InteractionMetrics.css';
+
+const InteractionMetrics = ({ data }) => {
+  const totalInteractions = data.length;
+  const meetings = data.filter(interaction => interaction.type === 'meeting').length;
+  const calls = data.filter(interaction => interaction.type === 'call').length;
+  const emails = data.filter(interaction => interaction.type === 'email').length;
+
+  return (
+    <div className="interaction-metrics">
+      <div className="metric">
+        <span>Meetings</span>
+        <ProgressBar now={(meetings / totalInteractions) * 100} label={`${meetings}`} />
+      </div>
+      <div className="metric">
+        <span>Calls</span>
+        <ProgressBar now={(calls / totalInteractions) * 100} label={`${calls}`} />
+      </div>
+      <div className="metric">
+        <span>Emails</span>
+        <ProgressBar now={(emails / totalInteractions) * 100} label={`${emails}`} />
+      </div>
+    </div>
+  );
+};
+
+export default InteractionMetrics;
+```
+
+***File Name***: src/CRM/InteractionHistory/InteractionChart.js
+```javascript
+import React from 'react';
+import { Pie } from 'react-chartjs-2';
+import ChartLegend from './ChartLegend';
+import './InteractionChart.css';
+
+const InteractionChart = ({ data }) => {
+  const interactionTypes = ['meeting', 'call', 'email'];
+  const interactionCounts = interactionTypes.map(type => data.filter(interaction => interaction.type === type).length);
+
+  const chartData = {
+    labels: interactionTypes,
+    datasets: [{
+      data: interactionCounts,
+      backgroundColor: ['#007BFF', '#17A2B8', '#28A745']
+    }]
+  };
+
+  return (
+    <div className="interaction-chart">
+      <Pie data={chartData} />
+      <ChartLegend labels={interactionTypes} colors={['#007BFF', '#17A2B8', '#28A745']} />
+    </div>
+  );
+};
+
+export default InteractionChart;
+```
+
+***File Name***: src/CRM/InteractionHistory/FilterControls.js
+```javascript
+import React from 'react';
+import DateRangePicker from './DateRangePicker';
+import './FilterControls.css';
+
+const FilterControls = ({ filters, setFilters }) => {
+  const handleClientChange = (e) => setFilters({ ...filters, client: e.target.value });
+  const handleTypeChange = (e) => setFilters({ ...filters, type: e.target.value });
+  const handleDateRangeChange = (start, end) => setFilters({ ...filters, dateRange: { start, end } });
+
+  return (
+    <div className="filter-controls">
+      <select value={filters.client} onChange={handleClientChange}>
+        <option value="">All Clients</option>
+        <option value="Client A">Client A</option>
+        <option value="Client B">Client B</option>
+      </select>
+      <select value={filters.type} onChange={handleTypeChange}>
+        <option value="">All Types</option>
+        <option value="meeting">Meeting</option>
+        <option value="call">Call</option>
+        <option value="email">Email</option>
+      </select>
+      <DateRangePicker start={filters.dateRange.start} end={filters.dateRange.end} onChange={handleDateRangeChange} />
+    </div>
+  );
+};
+
+export default FilterControls;
+```
+
+***File Name***: src/CRM/InteractionHistory/DateRangePicker.js
+```javascript
+import React from 'react';
+import { DateRangePicker as ReactDatesRangePicker } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
+import './DateRangePicker.css';
+
+const DateRangePicker = ({ start, end, onChange }) => {
+  const handleDatesChange = ({ startDate, endDate }) => {
+    onChange(startDate, endDate);
+  };
+
+  return (
+    <ReactDatesRangePicker
+      startDate={start}
+      endDate={end}
+      onDatesChange={handleDatesChange}
+      focusedInput={focusedInput}
+      onFocusChange={focusedInput => setFocusedInput(focusedInput)}
+      numberOfMonths={1}
+      isOutsideRange={() => false}
+    />
+  );
+};
+
+export default DateRangePicker;
+```
+
+***File Name***: src/CRM/InteractionHistory/ChartLegend.js
+```javascript
+import React from 'react';
+import './ChartLegend.css';
+
+const ChartLegend = ({ labels, colors }) => {
+  return (
+    <div className="chart-legend">
+      {labels.map((label, index) => (
+        <div key={index} className="legend-item">
+          <span className="legend-color" style={{ backgroundColor: colors[index] }}></span>
+          <span className="legend-label">{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ChartLegend;
+```
+
+***File Name***: src/CRM/InteractionHistory/InteractionHistory.css
+```css
+.interaction-history {
+  padding: 20px;
+  background-color: #ffffff;
+  color: #212529;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  color: #007BFF;
+}
+
+header button {
+  background-color: #007BFF;
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+header button:hover {
+  background-color: #0056b3;
+}
+```
+
+***File Name***: src/CRM/InteractionHistory/InteractionMetrics.css
+```css
+.interaction-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+
+.metric span {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.progress-bar {
+  width: 100%;
+}
+```
+
+***File Name***: src/CRM/InteractionHistory/InteractionChart.css
+```css
+.interaction-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+```
+
+***File Name***: src/CRM/InteractionHistory/FilterControls.css
+```css
+.filter-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.filter-controls select,
+.filter-controls .DateRangePicker {
+  margin-right: 10px;
+  padding: 5px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #212529;
+}
+```
+
+***File Name***: src/CRM/InteractionHistory/DateRangePicker.css
+```css
+.DateRangePicker {
+  display: inline-block;
+}
+```
+
+***File Name***: src/CRM/InteractionHistory/ChartLegend.css
+```css
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+```
+***File Name***: src/pages/ContractStatus.js
+```javascript
+import React, { useState } from 'react';
+import ContractTable from '../components/ContractTable';
+import SortFilterControls from '../components/SortFilterControls';
+import Tooltip from '../components/Tooltip';
+
+const ContractStatus = () => {
+  const [contracts, setContracts] = useState([
+    { client: 'Client A', status: 'Active', expirationDate: '2023-12-31', renewalStatus: 'Pending' },
+    { client: 'Client B', status: 'Expired', expirationDate: '2021-06-30', renewalStatus: 'Expired' },
+    // More contracts
+  ]);
+
+  // Sorting and filtering logic here
+
+  return (
+    <div>
+      <h1>Contract Status</h1>
+      <SortFilterControls />
+      <ContractTable contracts={contracts} />
+      <Tooltip />
+    </div>
+  );
+};
+
+export default ContractStatus;
+```
+
+***File Name***: src/components/ContractTable.js
+```javascript
+import React from 'react';
+import ContractRow from './ContractRow';
+
+const ContractTable = ({ contracts }) => {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Status</th>
+          <th>Expiration Date</th>
+          <th>Renewal Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {contracts.map((contract, index) => (
+          <ContractRow key={index} contract={contract} />
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default ContractTable;
+```
+
+***File Name***: src/components/ContractRow.js
+```javascript
+import React from 'react';
+import ContractIndicators from './ContractIndicators';
+
+const ContractRow = ({ contract }) => {
+  const { client, status, expirationDate, renewalStatus } = contract;
+
+  return (
+    <tr>
+      <td>{client}</td>
+      <td>{status}</td>
+      <td>{expirationDate}</td>
+      <td>{renewalStatus}</td>
+      <ContractIndicators expirationDate={expirationDate} renewalStatus={renewalStatus} />
+    </tr>
+  );
+};
+
+export default ContractRow;
+```
+
+***File Name***: src/components/ContractIndicators.js
+```javascript
+import React from 'react';
+
+const ContractIndicators = ({ expirationDate, renewalStatus }) => {
+  const isNearExpiration = (date) => {
+    const today = new Date();
+    const expDate = new Date(date);
+    const timeDiff = expDate - today;
+    return timeDiff < 30 * 24 * 60 * 60 * 1000 && timeDiff > 0; // within 30 days
+  };
+
+  return (
+    <>
+      {isNearExpiration(expirationDate) && <span className="indicator warning">Nearing Expiration</span>}
+      {renewalStatus === 'Pending' && <span className="indicator pending">Pending Renewal</span>}
+    </>
+  );
+};
+
+export default ContractIndicators;
+```
+
+***File Name***: src/components/SortFilterControls.js
+```javascript
+import React from 'react';
+
+const SortFilterControls = () => {
+  return (
+    <div className="sort-filter-controls">
+      <button>Sort by Client</button>
+      <button>Sort by Status</button>
+      <button>Sort by Expiration Date</button>
+      <button>Sort by Renewal Status</button>
+      {/* Add more controls as needed */}
+    </div>
+  );
+};
+
+export default SortFilterControls;
+```
+
+***File Name***: src/components/Tooltip.js
+```javascript
+import React from 'react';
+
+const Tooltip = () => {
+  return (
+    <div className="tooltip">
+      {/* Tooltip content */}
+    </div>
+  );
+};
+
+export default Tooltip;
+```
+
+***File Name***: src/components/ContractStatus.css
+```css
+body {
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.indicator.warning {
+  color: yellow;
+}
+
+.indicator.pending {
+  color: orange;
+}
+
+.sort-filter-controls {
+  margin-bottom: 20px;
+}
+
+.sort-filter-controls button {
+  margin-right: 10px;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: none;
+}
+```
+***File Name***: src/Analytics/Analytics.js
+```javascript
+import React, { useState, useEffect } from 'react';
+import TrendChart from './TrendChart';
+import PerformanceChart from './PerformanceChart';
+import FilterControls from './FilterControls';
+import './Analytics.css';
+
+const Analytics = () => {
+  const [dateRange, setDateRange] = useState({ start: null, end: null });
+  const [engagementMetrics, setEngagementMetrics] = useState([]);
+  const [kpis, setKpis] = useState([]);
+  const [filteredData, setFilteredData] = useState({});
+
+  useEffect(() => {
+    // Fetch initial data or set up initial state
+  }, []);
+
+  const handleFilterChange = (filters) => {
+    // Apply filters and update state
+  };
+
+  return (
+    <div className="analytics-page">
+      <header className="analytics-header">
+        <h1>Analytics</h1>
+        <p>Analyze engagement trends and performance metrics.</p>
+      </header>
+      <FilterControls onFilterChange={handleFilterChange} />
+      <main className="analytics-content">
+        <TrendChart data={filteredData.engagementTrends} />
+        <PerformanceChart data={filteredData.kpis} />
+      </main>
+      <footer className="analytics-footer">
+        <p>Additional Information</p>
+      </footer>
+    </div>
+  );
+};
+
+export default Analytics;
+```
+
+***File Name***: src/Analytics/TrendChart.js
+```javascript
+import React from 'react';
+import { Line } from 'react-chartjs-2';
+import 'chart.js/auto';
+
+const TrendChart = ({ data }) => {
+  const chartData = {
+    labels: data.map(item => item.date),
+    datasets: [
+      {
+        label: 'Engagement Trends',
+        data: data.map(item => item.value),
+        borderColor: '#007BFF',
+        backgroundColor: '#17A2B8',
+      },
+    ],
+  };
+
+  return (
+    <div className="chart-container">
+      <Line data={chartData} />
+    </div>
+  );
+};
+
+export default TrendChart;
+```
+
+***File Name***: src/Analytics/PerformanceChart.js
+```javascript
+import React from 'react';
+import { Bar } from 'react-chartjs-2';
+import 'chart.js/auto';
+
+const PerformanceChart = ({ data }) => {
+  const chartData = {
+    labels: data.map(item => item.kpi),
+    datasets: [
+      {
+        label: 'Performance Metrics',
+        data: data.map(item => item.value),
+        borderColor: '#007BFF',
+        backgroundColor: '#17A2B8',
+      },
+    ],
+  };
+
+  return (
+    <div className="chart-container">
+      <Bar data={chartData} />
+    </div>
+  );
+};
+
+export default PerformanceChart;
+```
+
+***File Name***: src/Analytics/FilterControls.js
+```javascript
+import React, { useState } from 'react';
+import DateRangePicker from './DateRangePicker';
+import './FilterControls.css';
+
+const FilterControls = ({ onFilterChange }) => {
+  const [filters, setFilters] = useState({
+    dateRange: { start: null, end: null },
+    metrics: [],
+    kpis: [],
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+    onFilterChange(filters);
+  };
+
+  return (
+    <div className="filter-controls">
+      <DateRangePicker
+        startDate={filters.dateRange.start}
+        endDate={filters.dateRange.end}
+        onChange={(range) => handleChange({ target: { name: 'dateRange', value: range } })}
+      />
+      {/* Additional filter controls like dropdowns, sliders, etc. */}
+    </div>
+  );
+};
+
+export default FilterControls;
+```
+
+***File Name***: src/Analytics/DateRangePicker.js
+```javascript
+import React from 'react';
+import { DateRange } from 'react-date-range';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
+
+const DateRangePicker = ({ startDate, endDate, onChange }) => {
+  const handleSelect = (ranges) => {
+    onChange({ start: ranges.selection.startDate, end: ranges.selection.endDate });
+  };
+
+  const selectionRange = {
+    startDate: startDate || new Date(),
+    endDate: endDate || new Date(),
+    key: 'selection',
+  };
+
+  return (
+    <DateRange
+      ranges={[selectionRange]}
+      onChange={handleSelect}
+    />
+  );
+};
+
+export default DateRangePicker;
+```
+
+***File Name***: src/Analytics/ChartLegend.js
+```javascript
+import React from 'react';
+import './ChartLegend.css';
+
+const ChartLegend = () => {
+  return (
+    <div className="chart-legend">
+      <p><span className="legend-color" style={{ backgroundColor: '#007BFF' }}></span> Engagement Trends</p>
+      <p><span className="legend-color" style={{ backgroundColor: '#17A2B8' }}></span> Performance Metrics</p>
+    </div>
+  );
+};
+
+export default ChartLegend;
+```
+
+***File Name***: src/Analytics/Analytics.css
+```css
+.analytics-page {
+  font-family: Arial, sans-serif;
+  color: #212529;
+}
+
+.analytics-header {
+  background-color: #FFFFFF;
+  padding: 20px;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.analytics-header h1 {
+  margin: 0;
+  color: #007BFF;
+}
+
+.analytics-header p {
+  margin: 5px 0 0;
+}
+
+.analytics-content {
+  padding: 20px;
+}
+
+.chart-container {
+  margin: 20px 0;
+}
+
+.analytics-footer {
+  background-color: #F8F9FA;
+  padding: 10px;
+  text-align: center;
+}
+
+.analytics-footer p {
+  margin: 0;
+}
+```
+
+***File Name***: src/Analytics/FilterControls.css
+```css
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-controls .react-date-range {
+  flex: 1;
+}
+
+/* Additional styles for dropdowns, sliders, etc. */
+```
+
+***File Name***: src/Analytics/ChartLegend.css
+```css
+.chart-legend {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+```
+***File Name***: src/App.js
+```javascript
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ClientOverview from './pages/ClientOverview';
+import InteractionHistory from './CRM/InteractionHistory/InteractionHistory';
+import ContractStatus from './pages/ContractStatus';
+import Analytics from './Analytics/Analytics';
+import './App.css';
+
+const App = () => {
+  return (
+    <Router>
+      <div className="app">
+        <Routes>
+          <Route path="/" element={<ClientOverview />} />
+          <Route path="/interaction-history" element={<InteractionHistory />} />
+          <Route path="/contract-status" element={<ContractStatus />} />
+          <Route path="/analytics" element={<Analytics />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
+
+export default App;
+```

@@ -1,0 +1,647 @@
+
+### PAGE: Client Overview
+
+1. Page Overview:
+
+    ### Purpose:
+    - **Purpose and Goals:** The Client Overview page serves as a centralized dashboard for viewing and managing all clients within the organization. The primary objective is to provide account managers and client relationship managers with a high-level summary of client engagement, status, and contract details. This page helps users quickly identify clients that need immediate attention, such as those with upcoming contract renewals or scheduled meetings.
+    - **Innovative Features:** The page includes visual indicators to highlight clients requiring immediate action, sorting and filtering capabilities for efficient data management, and a detailed modal view for in-depth client information.
+
+    ## 2. Functionality Details:
+    For each function on the page:
+    ### Function Description:
+    - **Role and Relevance:** The main functions of this page include displaying a list of clients, visual indicators for immediate actions, sorting, and filtering client data. These functionalities help in maintaining client relationships by ensuring no critical tasks are overlooked.
+    
+    #### Client List:
+    - **Role and Relevance:** Displays all clients with essential details for quick review. It is crucial for monitoring client status and recent interactions.
+    ### Inputs:
+    - **Details:** 
+        - **Data Type:** Array of client objects.
+        - **Source:** Component state or props.
+        - **Format:** Each client object includes `name`, `status`, `recentInteractions`, `contractDetails`.
+        - **Validation Rules:** Ensure all necessary fields are present and correctly formatted.
+    ### Processing Logic:
+    - **Breakdown:** 
+        - **Initial Checks:** Validate data format and presence of required fields.
+        - **Main Operations:** Map through the client array and render each client row.
+        - **Final Output:** Display a table with client details.
+    ### Outputs:
+    - **Details:** 
+        - **Type:** JSX elements.
+        - **Format:** Table rows containing client information.
+        - **Usage:** Rendered on the page for user review.
+
+    #### Visual Indicators:
+    - **Role and Relevance:** Highlight clients with upcoming meetings or contract renewals, aiding in quick identification of urgent tasks.
+    ### Inputs:
+    - **Details:** 
+        - **Data Type:** Boolean flags or dates.
+        - **Source:** Client data objects.
+        - **Format:** Flags indicating meetings, renewal dates.
+        - **Validation Rules:** Ensure dates are valid and flags are boolean.
+    ### Processing Logic:
+    - **Breakdown:** 
+        - **Initial Checks:** Validate flags and dates.
+        - **Main Operations:** Determine if indicators should be displayed based on the current date.
+        - **Final Output:** Render icons or color-coded indicators.
+    ### Outputs:
+    - **Details:** 
+        - **Type:** JSX elements (icons or colored indicators).
+        - **Format:** Inline elements within client rows.
+        - **Usage:** Displayed next to client details for quick visual reference.
+
+    #### Sorting and Filtering:
+    - **Role and Relevance:** Allows users to organize and narrow down client data based on specific criteria, enhancing data management efficiency.
+    ### Inputs:
+    - **Details:** 
+        - **Data Type:** Strings or select options for sorting criteria; checkboxes or dropdowns for filter options.
+        - **Source:** User inputs.
+        - **Format:** Sorting criteria (e.g., `name`, `status`), filter options (e.g., `active`, `inactive`).
+        - **Validation Rules:** Ensure valid criteria and options are selected.
+    ### Processing Logic:
+    - **Breakdown:** 
+        - **Initial Checks:** Validate user inputs.
+        - **Main Operations:** Apply sorting and filtering logic to the client list.
+        - **Final Output:** Update state and re-render client list.
+    ### Outputs:
+    - **Details:** 
+        - **Type:** Updated array of client objects.
+        - **Format:** Filtered and sorted client data.
+        - **Usage:** Rendered on the page for user review.
+
+    ## 3. Component Details:
+    For each component on the page:
+    ### ClientTable:
+    - **Functionality and Behavior:** Displays a list of clients in a tabular format with sortable and filterable columns.
+    ### Layout:
+    - **Details:** Positioned centrally, spans the width of the main content area, responsive design for different screen sizes.
+    ### Interactions:
+    - **Interactive Elements:** Column headers for sorting, filter controls, clickable rows for detailed view.
+    ### Styling Requirements:
+    - **Details:** 
+        - **Colors:** Primary color for headers, secondary color for rows, hover effects for interactions.
+        - **Typography:** Consistent with the application's font style and size.
+        - **Borders:** Subtle borders for table cells to enhance readability.
+        - **Accessibility:** ARIA roles for table and rows, keyboard navigation support.
+    
+    ### ClientRow:
+    - **Functionality and Behavior:** Represents individual client information within the table.
+    ### Layout:
+    - **Details:** Consists of multiple cells, each displaying specific client details.
+    ### Interactions:
+    - **Interactive Elements:** Clickable for opening detailed modal, hover effects for additional information.
+    ### Styling Requirements:
+    - **Details:** 
+        - **Colors:** Consistent with the table, highlighted on hover.
+        - **Typography:** Same as table.
+        - **Borders:** Consistent with table cell borders.
+        - **Accessibility:** ARIA roles for rows, focus indicators for keyboard navigation.
+    
+    ### ClientIndicators:
+    - **Functionality and Behavior:** Displays visual indicators for meetings or renewals.
+    ### Layout:
+    - **Details:** Inline with client details, positioned next to relevant information.
+    ### Interactions:
+    - **Interactive Elements:** Tooltip on hover for additional details.
+    ### Styling Requirements:
+    - **Details:** 
+        - **Colors:** Accent color for indicators.
+        - **Typography:** Tooltip text consistent with the application.
+        - **Accessibility:** ARIA roles for indicators, screen reader support.
+
+    ### SortFilterControls:
+    - **Functionality and Behavior:** Provides sorting and filtering options for the client list.
+    ### Layout:
+    - **Details:** Positioned at the top of the page, spans the width of the main content area.
+    ### Interactions:
+    - **Interactive Elements:** Dropdowns, checkboxes, and buttons for user inputs.
+    ### Styling Requirements:
+    - **Details:** 
+        - **Colors:** Primary and secondary colors for controls.
+        - **Typography:** Consistent with the application.
+        - **Borders:** Subtle borders for input elements.
+        - **Accessibility:** ARIA roles for controls, focus indicators for keyboard navigation.
+    
+    ### Tooltip:
+    - **Functionality and Behavior:** Displays additional information on hover.
+    ### Layout:
+    - **Details:** Appears next to the element being hovered over.
+    ### Interactions:
+    - **Interactive Elements:** Hover to display tooltip, mouseout to hide.
+    ### Styling Requirements:
+    - **Details:** 
+        - **Colors:** Background color with text contrast.
+        - **Typography:** Smaller font size, consistent with the application.
+        - **Borders:** Subtle border around the tooltip.
+        - **Accessibility:** ARIA roles for tooltips, screen reader support.
+
+    ## 4. Page Layout and Design:
+    Describe visual design, including layout positions, sizes, and alignment. Include detailed component styling and overall design principles.
+
+    ### Top Section:
+    - **Header:** 
+        - **Design:** Simple and clean header with page title and navigation links.
+        - **Functionality:** Displays the page title and provides navigation options.
+        - **Placement:** Fixed at the top of the page.
+        - **Advanced Features:** Responsive design, collapsible menu for smaller screens.
+
+    ### Mid-Section:
+    - **Main Content:** 
+        - **ClientTable:**
+            - **Layout:** Centrally positioned, full-width table with scrollable rows.
+            - **Functionality:** Displays a list of clients with sortable and filterable columns.
+            - **Interactions:** Sorting and filtering controls, row click for detailed view.
+        - **ClientRow:**
+            - **Layout:** Multiple rows within the table, each representing a client.
+            - **Functionality:** Displays client details.
+            - **Interactions:** Hover effects, clickable for modal view.
+        - **ClientIndicators:**
+            - **Layout:** Inline with client details.
+            - **Functionality:** Displays visual indicators for meetings or renewals.
+            - **Interactions:** Tooltip on hover.
+
+    ### Mid-Bottom:
+    - **Additional Features:** 
+        - **SortFilterControls:**
+            - **Layout:** Positioned above the ClientTable, spans the width of the main content area.
+            - **Functionality:** Provides sorting and filtering options for the client list.
+            - **Interactions:** Dropdowns, checkboxes, and buttons for user inputs.
+
+    ### Bottom:
+    - **Footer:** 
+        - **Design:** Simple footer with company information and links.
+        - **Placement:** Fixed at the bottom of the page.
+        - **Components:** Company logo, contact information, and quick links.
+        - **Creative Elements:** Minimalist design, consistent with the overall application style.
+
+    ## 5. File and Component Structure:
+    ### Integration:
+    - **Instructions:** 
+        - **Import Components:** Import all necessary components into `ClientOverview.js`.
+        - **Assemble Components:** Arrange components within the `ClientOverview` component.
+        - **Configure Components:** Pass necessary props and state to each component.
+        - **Advanced Techniques:** Use React hooks for state management and effect handling, implement memoization for performance optimization.
+
+    - **Organize all related files within a single directory with the page name.**
+        - **File Paths:**
+            - `src/pages/ClientOverview.js`
+            - `src/components/ClientTable.js`
+            - `src/components/ClientRow.js`
+            - `src/components/ClientIndicators.js`
+            - `src/components/SortFilterControls.js`
+            - `src/components/Tooltip.js`
+
+    ## 6. Enhancement Suggestions:
+    ### Additional Functions or Features:
+    - **Suggestions:** 
+        - **Real-time Data Updates:** Implement WebSocket connections to update client data in real-time, ensuring the most current information is always displayed.
+        - **Advanced Filtering Options:** Add multi-select filters and date range pickers for more granular control over the displayed data.
+        - **Export Feature:** Allow users to export the client list to CSV or Excel for offline analysis.
+        - **Machine Learning Insights:** Integrate machine learning models to provide predictive insights, such as identifying clients at risk of churn.
+        - **Code Snippet for Real-time Updates:**
+            ```javascript
+            useEffect(() => {
+                const socket = new WebSocket('ws://example.com/realtime-updates');
+                socket.onmessage = (event) => {
+                    const updatedData = JSON.parse(event.data);
+                    setClients((prevClients) => updateClientData(prevClients, updatedData));
+                };
+                return () => socket.close();
+            }, []);
+            ```
+
+---
+
+This detailed breakdown provides a comprehensive guide for the Client Overview page, ensuring clarity in functionality, component behavior, layout, and potential enhancements.
+
+### PAGE: Interaction History
+1. Page Overview:
+
+### Purpose:
+- **Purpose and Goals**: The Interaction History page aims to provide a comprehensive view of client interactions, such as meetings, calls, and emails. It helps users to assess engagement levels, identify trends, and make informed decisions to improve client relationships. This page plays a crucial role in the CRM module, offering real-time insights into client engagement.
+- **Innovative Features**: This page stands out due to its interactive visual representations, including progress bars and pie charts. Users can drill down into detailed data by interacting with these visual elements. Additionally, advanced filtering options allow users to customize their view based on client, type of interaction, and date range.
+
+## 2. Functionality Details:
+### Function Description:
+- **Role and Relevance**: The primary function of this page is to aggregate interaction data and present it visually. It provides users with an overview of their engagement activities, helping them to monitor and improve client relationships. The business logic includes aggregating data by type and date range, and visual elements like charts and progress bars enhance user understanding.
+### Inputs:
+- **Details**: Required inputs include interaction data (meetings, calls, emails) in JSON format, user-selected filters (client, interaction type, date range), and interaction metrics. Data validation ensures that inputs are correctly formatted and within acceptable ranges.
+### Processing Logic:
+- **Breakdown**:
+  - **Initial Checks**: Verify the format and completeness of the interaction data.
+  - **Main Operations**: Aggregate interaction data by type and date range using JavaScript functions. Update the state with filtered data.
+  - **Intermediate States**: Manage intermediate states for filtered data and chart settings using React's `useState`.
+  - **Final Output**: Render visual elements (charts and progress bars) based on the aggregated data.
+  - **Error Handling**: Display error messages for data validation issues or aggregation failures.
+  - **Performance Optimizations**: Use memoization to improve performance for large datasets.
+### Outputs:
+- **Details**: Outputs include visual representations of interaction data (progress bars, pie charts), filtered interaction lists, and detailed views of specific interactions. These outputs provide insights into client engagement and are dynamically updated based on user inputs.
+
+## 3. Component Details:
+### Component Description:
+- **InteractionMetrics**:
+  - **Functionality and Behavior**: Displays overall metrics for different types of interactions (meetings, calls, emails). It uses progress bars to show the completion status of interaction goals.
+  - **Layout**: Positioned at the top of the page, spans the full width. Uses a grid layout for responsive design.
+  - **Interactions**: Users can hover over progress bars for additional details. Clicking a metric filters the data in the `InteractionChart`.
+  - **Styling Requirements**: Uses primary color (#007BFF) for progress bars, with a background color of #FFFFFF and text color of #212529.
+  - **Accessibility**: Includes ARIA roles for progress bars and keyboard navigation support.
+- **InteractionChart**:
+  - **Functionality and Behavior**: Visualizes interaction data using pie charts or bar charts. Users can click on chart segments to drill down into more detailed data.
+  - **Layout**: Positioned below `InteractionMetrics`, spans the full width. Uses a responsive layout to adjust to different screen sizes.
+  - **Interactions**: Supports clicking on chart segments to open a detailed view modal. Hovering over segments shows tooltips with additional information.
+  - **Styling Requirements**: Uses accent color (#17A2B8) for chart segments, with a background color of #FFFFFF and text color of #212529.
+  - **Accessibility**: Includes ARIA roles for charts and supports screen readers.
+- **FilterControls**:
+  - **Functionality and Behavior**: Provides controls for filtering interaction data by client, type, and date range. Uses dropdowns and date pickers for user inputs.
+  - **Layout**: Positioned at the top of the page, above `InteractionMetrics`. Uses a horizontal layout with spacing between controls.
+  - **Interactions**: Dropdowns and date pickers update the state, triggering re-rendering of `InteractionMetrics` and `InteractionChart`.
+  - **Styling Requirements**: Uses secondary color (#6C757D) for controls, with a background color of #FFFFFF and text color of #212529.
+  - **Accessibility**: Includes ARIA roles for dropdowns and date pickers, and supports keyboard navigation.
+- **DateRangePicker**:
+  - **Functionality and Behavior**: Allows users to select a date range for filtering interaction data. Reusable across other pages.
+  - **Layout**: Integrated into `FilterControls`. Uses a compact layout to fit within the horizontal space.
+  - **Interactions**: Supports selecting start and end dates, updating the state accordingly.
+  - **Styling Requirements**: Uses primary color (#007BFF) for date picker elements, with a background color of #FFFFFF and text color of #212529.
+  - **Accessibility**: Includes ARIA roles for date picker elements and supports screen readers.
+- **ChartLegend**:
+  - **Functionality and Behavior**: Provides a legend for chart explanations, indicating what each segment or color represents. Reusable across other charts.
+  - **Layout**: Positioned next to `InteractionChart`. Uses a vertical layout with spacing between legend items.
+  - **Interactions**: Supports hovering over legend items to highlight corresponding chart segments.
+  - **Styling Requirements**: Uses accent color (#17A2B8) for legend items, with a background color of #FFFFFF and text color of #212529.
+  - **Accessibility**: Includes ARIA roles for legend items and supports keyboard navigation.
+
+4. Page Layout and Design: Describe visual design, including layout positions, sizes, and alignment. Include detailed component styling and overall design principles.
+### Top Section:
+- **Header**:
+  - **Design**: The header includes the page title "Interaction History" and a brief description. It uses a bold font with the primary color (#007BFF).
+  - **Functionality**: Displays the current date range and a button to reset filters.
+  - **Placement**: Positioned at the very top, spanning the full width of the page.
+### Mid-Section:
+- **Main Content**:
+  - **InteractionMetrics**:
+    - **Layout**: Positioned directly below the header, spans the full width. Uses a grid layout for metrics.
+    - **Functionality**: Displays progress bars for different interaction types.
+  - **InteractionChart**:
+    - **Layout**: Positioned below `InteractionMetrics`, spans the full width. Uses a responsive layout for different screen sizes.
+    - **Functionality**: Visualizes interaction data using pie charts or bar charts.
+  - **FilterControls**:
+    - **Layout**: Positioned at the top of the page, above `InteractionMetrics`. Uses a horizontal layout.
+    - **Functionality**: Provides controls for filtering interaction data.
+### Mid-Bottom:
+- **Additional Features**:
+  - **Detailed View Modal**:
+    - **Layout**: A modal that appears when a chart segment is clicked. Centrally positioned with a backdrop.
+    - **Functionality**: Displays detailed interaction information.
+### Bottom:
+- **Footer**:
+  - **Design**: The footer includes navigation links and contact information. Uses a smaller font with a secondary color (#6C757D).
+  - **Placement**: Positioned at the very bottom, spanning the full width of the page.
+  
+5. File and Component Structure:
+
+### Integration:
+- **Instructions**: Import necessary components from their respective files and assemble them within the `InteractionHistory` page. Configure state management and effect hooks for data handling.
+- **Organize all related files within a single directory with the page name.** 
+  - **File Paths**:
+    - `src/CRM/InteractionHistory/InteractionHistory.js`
+    - `src/CRM/InteractionHistory/InteractionMetrics.js`
+    - `src/CRM/InteractionHistory/InteractionChart.js`
+    - `src/CRM/InteractionHistory/FilterControls.js`
+    - `src/CRM/InteractionHistory/DateRangePicker.js`
+    - `src/CRM/InteractionHistory/ChartLegend.js`
+
+7. Enhancement Suggestions:
+
+### Additional Functions or Features:
+- **Suggestions**:
+  - **Real-Time Data Updates**: Implement WebSocket connections to update interaction data in real-time, enhancing the timeliness of insights.
+  - **Export Data**: Add functionality to export interaction data to CSV or Excel for offline analysis.
+  - **Machine Learning Insights**: Integrate machine learning algorithms to provide predictive insights on client engagement trends.
+  - **Enhanced Filtering**: Add advanced filtering options, such as filtering by interaction outcome or client industry.
+  - **Mobile Optimization**: Optimize the layout and interactions for mobile devices to improve accessibility and usability on smaller screens.
+
+By following this detailed plan, the Interaction History page will provide valuable insights into client interactions, helping users to improve engagement and foster better client relationships.
+
+### PAGE: Contract Status
+
+1. **Page Overview:**
+
+### Purpose:
+- **Purpose and Goals:** The Contract Status page is designed to provide an overview of all client contracts and their renewal statuses. It aims to highlight contracts that are nearing expiration, allowing contract managers, account managers, and client relationship managers to proactively manage and renew contracts. This page is crucial for ensuring that no contracts lapse without appropriate action, maintaining continuous business relationships and revenue flow.
+- **Innovative Features:** The page includes advanced filtering and sorting options, visual indicators for critical contracts, and an interactive table that provides detailed contract information on hover. The use of in-memory data allows for fast and responsive interactions.
+
+## 2. **Functionality Details:**
+
+### Function Description:
+- **Contract List Display:**
+  - **Role and Relevance:** The contract list is the primary component, displaying all client contracts with relevant details. It allows users to monitor the status and expiration of contracts, facilitating timely renewals.
+  - **Inputs:** Dummy data representing contract details, including client name, contract status, expiration date, and renewal status. The data is structured as an array of objects.
+  - **Processing Logic:** The contract data is initially loaded into the component state using `useState`. The `ContractTable` component iterates over this data and displays it in a tabular format. Sorting and filtering modify the displayed data based on user interactions.
+  - **Outputs:** A rendered table displaying the contract details, with specific rows highlighted if contracts are nearing expiration or need renewal.
+
+### Inputs:
+- **Details:** 
+  - Contract data: Array of objects with fields `client`, `status`, `expirationDate`, and `renewalStatus`.
+  - Example input:
+    ```javascript
+    const contracts = [
+      { client: 'Client A', status: 'Active', expirationDate: '2023-12-31', renewalStatus: 'Pending' },
+      { client: 'Client B', status: 'Expired', expirationDate: '2021-06-30', renewalStatus: 'Expired' },
+      // More contracts
+    ];
+    ```
+  - Validation rules: Ensure dates are in `YYYY-MM-DD` format, statuses are valid (e.g., 'Active', 'Expired'), and renewal statuses are valid (e.g., 'Pending', 'Renewed').
+
+### Processing Logic:
+- **Breakdown:**
+  - Initial Load: Load dummy data into state.
+  - Sorting: On clicking column headers, sort the data based on the selected column.
+  - Filtering: Apply filters based on user selections from dropdowns or checkboxes.
+  - Highlighting: Apply visual indicators to rows where the expiration date is within 30 days or renewal status is 'Pending'.
+  - Error Handling: Validate input data format; handle invalid data gracefully by showing error messages.
+  - Performance: Use memoization to prevent unnecessary re-renders when data or filters do not change.
+
+### Outputs:
+- **Details:** Rendered table with each row representing a contract. Rows are styled differently if they meet certain criteria (e.g., nearing expiration).
+
+## 3. **Component Details:**
+
+### Component Description:
+
+#### ContractTable:
+- **Functionality and Behavior:** Displays the list of contracts in a tabular format. Supports sorting and filtering.
+- **Layout:** Positioned in the main content area. Occupies full width with responsive design to adapt to different screen sizes.
+- **Interactions:** Clicking on column headers to sort, dropdowns or checkboxes for filtering.
+- **Styling Requirements:** Uses a consistent color scheme with primary, secondary, and accent colors. Highlight rows based on certain criteria.
+- **Accessibility:** Includes ARIA roles for the table and its elements. Supports keyboard navigation and screen readers.
+
+#### ContractRow:
+- **Functionality and Behavior:** Represents individual contract information within the table.
+- **Layout:** Each row contains cells for client, status, expiration date, and renewal status.
+- **Interactions:** No direct interactions; receives props from `ContractTable`.
+- **Styling Requirements:** Applies conditional styling based on contract status and expiration.
+- **Accessibility:** Ensures each row is accessible by screen readers.
+
+#### ContractIndicators:
+- **Functionality and Behavior:** Displays visual indicators for contracts nearing expiration or needing renewal.
+- **Layout:** Positioned within the `ContractRow`.
+- **Interactions:** No direct interactions; purely visual.
+- **Styling Requirements:** Uses accent colors for indicators (e.g., yellow for nearing expiration).
+- **Accessibility:** Includes ARIA labels for visual indicators.
+
+#### SortFilterControls:
+- **Functionality and Behavior:** Provides sorting and filtering options for the contract list.
+- **Layout:** Positioned at the top of the page, above the `ContractTable`.
+- **Interactions:** Dropdowns or checkboxes for selecting filters, buttons or clickable headers for sorting.
+- **Styling Requirements:** Consistent with the page’s color scheme.
+- **Accessibility:** Includes ARIA roles and keyboard navigation support.
+
+#### Tooltip:
+- **Functionality and Behavior:** Displays additional contract information on hover.
+- **Layout:** Appears near the hovered element.
+- **Interactions:** Triggered by mouse hover.
+- **Styling Requirements:** Minimalistic design, matching the overall color scheme.
+- **Accessibility:** Accessible via keyboard navigation and screen readers.
+
+## 4. **Page Layout and Design:**
+
+### Top Section:
+- **Header:** Contains the page title "Contract Status" and may include navigation breadcrumbs. Styled with the primary color scheme.
+
+### Mid-Section:
+- **Main Content:**
+  - **ContractTable:** Central component displaying contract data.
+  - **SortFilterControls:** Positioned above the `ContractTable` for easy access.
+  - **ContractIndicators:** Integrated within the `ContractTable` for visual cues.
+
+### Mid-Bottom:
+- **Additional Features:**
+  - **Contract Details Modal:** Clicking on a contract row opens a modal with detailed contract information. The modal can be closed by clicking outside it or pressing the escape key.
+
+### Bottom:
+- **Footer:** Contains page navigation links and contact information. Styled with secondary color and consistent with the overall design.
+
+## 5. **File and Component Structure:**
+
+### Integration:
+- **Instructions:** 
+  - Import necessary components in `ContractStatus.js`.
+  - Assemble the `ContractTable` with `ContractRow` and `ContractIndicators` components.
+  - Use `SortFilterControls` to manage sorting and filtering.
+  - Integrate `Tooltip` for hover information.
+- **File Paths:**
+  - src/pages/ContractStatus.js
+  - src/components/ContractTable.js
+  - src/components/ContractRow.js
+  - src/components/ContractIndicators.js
+  - src/components/SortFilterControls.js
+  - src/components/Tooltip.js
+
+## 7. **Enhancement Suggestions:**
+
+### Additional Functions or Features:
+- **Suggestions:**
+  - **Export to CSV:** Add a feature to export the contract list to a CSV file. This would allow users to download and share contract data easily.
+  - **Real-Time Updates:** Integrate with a backend service to fetch real-time contract data, eliminating the need for dummy data.
+  - **Notifications:** Implement a notification system to alert users about contracts nearing expiration or needing renewal.
+  - **Advanced Filtering:** Add more granular filtering options, such as filtering by contract value or client industry.
+  - **Analytics Dashboard:** Include an analytics section to provide insights into contract renewals, expirations, and other key metrics.
+
+```javascript
+// Example of integrating SortFilterControls in ContractStatus.js
+import React, { useState, useEffect } from 'react';
+import ContractTable from '../components/ContractTable';
+import SortFilterControls from '../components/SortFilterControls';
+import Tooltip from '../components/Tooltip';
+
+const ContractStatus = () => {
+  const [contracts, setContracts] = useState([
+    { client: 'Client A', status: 'Active', expirationDate: '2023-12-31', renewalStatus: 'Pending' },
+    { client: 'Client B', status: 'Expired', expirationDate: '2021-06-30', renewalStatus: 'Expired' },
+    // More contracts
+  ]);
+
+  // Sorting and filtering logic here
+
+  return (
+    <div>
+      <h1>Contract Status</h1>
+      <SortFilterControls />
+      <ContractTable contracts={contracts} />
+      <Tooltip />
+    </div>
+  );
+};
+
+export default ContractStatus;
+```
+
+This detailed breakdown covers the purpose, functionality, components, layout, and potential enhancements for the Contract Status page, ensuring a comprehensive understanding for developers and stakeholders.
+
+### PAGE: Analytics
+
+## 1. Page Overview
+
+### Purpose:
+- **Purpose and Goals**: The Analytics page aims to provide a comprehensive view of engagement trends and performance metrics. It enables users to analyze client data effectively by offering advanced filtering and sorting options. This page is crucial for analysts, account managers, and client relationship managers who need to gain insights into client behavior and performance trends.
+- **Innovative Features**: The page features dynamic and interactive charts that allow users to drill down into data points for more detailed information. The use of customizable filters ensures that users can tailor the data views to meet their specific needs.
+
+## 2. Functionality Details
+
+### Function: Engagement Trends
+
+#### Function Description:
+- **Role and Relevance**: This function displays visual representations of engagement trends over time, helping users identify patterns and anomalies in user engagement. It is vital for understanding how engagement evolves and identifying periods of high or low activity.
+#### Inputs:
+- **Details**: 
+  - Date Range: A date range picker to select the period for analysis.
+  - Engagement Metrics: Types of engagement metrics (e.g., clicks, views) to be displayed.
+  - Data Source: In-memory data representing engagement records.
+#### Processing Logic:
+- **Breakdown**:
+  1. **Initial Checks**: Validate selected date range and metric types.
+  2. **Data Filtering**: Filter data based on selected date range and metrics.
+  3. **Aggregation**: Aggregate data points to calculate trends over the selected period.
+  4. **Visualization**: Render the trend chart with filtered and aggregated data.
+  5. **Error Handling**: Display error messages for invalid inputs or data issues.
+#### Outputs:
+- **Details**:
+  - Trend Chart: A line or bar chart displaying engagement trends.
+  - Data Points: Interactive points on the chart for detailed information on hover or click.
+
+### Function: Performance Metrics
+
+#### Function Description:
+- **Role and Relevance**: This function visualizes key performance indicators (KPIs) using charts and graphs. It helps users assess the performance of various aspects of client engagement.
+#### Inputs:
+- **Details**:
+  - KPI Selection: Dropdown to select KPIs (e.g., conversion rate, bounce rate).
+  - Date Range: A date range picker to select the period for analysis.
+  - Data Source: In-memory data representing performance metrics.
+#### Processing Logic:
+- **Breakdown**:
+  1. **Initial Checks**: Validate selected KPIs and date range.
+  2. **Data Filtering**: Filter data based on selected date range and KPIs.
+  3. **Visualization**: Render the performance chart with filtered data.
+  4. **Error Handling**: Display error messages for invalid inputs or data issues.
+#### Outputs:
+- **Details**:
+  - Performance Chart: A bar or line chart representing selected KPIs.
+  - Data Points: Interactive points on the chart for detailed information on hover or click.
+
+### Function: Customizable Filters
+
+#### Function Description:
+- **Role and Relevance**: This function provides various filtering and sorting options to customize the data view. It ensures that users can focus on relevant data subsets.
+#### Inputs:
+- **Details**:
+  - Filter Options: Dropdowns, sliders, and checkboxes for various filter criteria.
+  - Data Source: In-memory data representing engagement and performance metrics.
+#### Processing Logic:
+- **Breakdown**:
+  1. **Initial Checks**: Validate selected filter criteria.
+  2. **Data Filtering**: Apply selected filters to the data.
+  3. **State Update**: Update component state with filtered data.
+  4. **Chart Re-rendering**: Trigger re-rendering of charts with updated data.
+  5. **Error Handling**: Display error messages for invalid inputs or data issues.
+#### Outputs:
+- **Details**:
+  - Filtered Data: Updated data sets based on selected filters.
+  - Updated Charts: Re-rendered charts reflecting filtered data.
+
+## 3. Component Details
+
+### Component: TrendChart
+
+#### Component Description:
+- **Functionality and Behavior**: Displays engagement trends over time using a line or bar chart. Interactive elements allow users to drill down into data points for more detailed information.
+#### Layout:
+- **Details**: Positioned centrally in the main content area. Sized to fit within the page layout, maintaining a balance between readability and compactness.
+#### Interactions:
+- **Interactive Elements**: Users can hover over or click on data points to see detailed information. The chart updates dynamically based on filter changes.
+#### Styling Requirements:
+- **Details**: 
+  - Line/Bar Colors: Primary color (#007BFF) with accent color (#17A2B8) for highlights.
+  - Axis Labels: Dark grey (#212529) for readability.
+  - Tooltips: Light background with dark text for contrast.
+#### Accessibility:
+- **Ensure Accessibility**: Use ARIA roles for chart elements. Ensure keyboard navigation for interactive elements. Provide screen reader-friendly descriptions.
+
+### Component: PerformanceChart
+
+#### Component Description:
+- **Functionality and Behavior**: Visualizes key performance indicators using a bar or line chart. Allows users to interact with data points for more information.
+#### Layout:
+- **Details**: Positioned below the TrendChart in the main content area. Sized to complement the layout and ensure readability.
+#### Interactions:
+- **Interactive Elements**: Users can hover over or click on data points for detailed information. The chart updates dynamically based on filter changes.
+#### Styling Requirements:
+- **Details**: 
+  - Bar/Line Colors: Primary color (#007BFF) with accent color (#17A2B8) for highlights.
+  - Axis Labels: Dark grey (#212529) for readability.
+  - Tooltips: Light background with dark text for contrast.
+#### Accessibility:
+- **Ensure Accessibility**: Use ARIA roles for chart elements. Ensure keyboard navigation for interactive elements. Provide screen reader-friendly descriptions.
+
+### Component: FilterControls
+
+#### Component Description:
+- **Functionality and Behavior**: Provides controls for customizing the data view, including dropdowns, sliders, and checkboxes.
+#### Layout:
+- **Details**: Positioned at the top of the main content area. Sized to fit within the layout without overwhelming other components.
+#### Interactions:
+- **Interactive Elements**: Users can select filters using dropdowns, sliders, and checkboxes. The state updates dynamically, triggering chart re-rendering.
+#### Styling Requirements:
+- **Details**: 
+  - Control Colors: Primary color (#007BFF) for active states, secondary color (#6C757D) for inactive states.
+  - Labels: Dark grey (#212529) for readability.
+#### Accessibility:
+- **Ensure Accessibility**: Use ARIA roles for controls. Ensure keyboard navigation for all interactive elements. Provide screen reader-friendly labels.
+
+## 4. Page Layout and Design
+
+### Top Section:
+- **Header**: Contains page title "Analytics" and a brief description of the page's purpose. Positioned at the top with a background color (#FFFFFF) and dark grey text (#212529). The header includes navigation links styled with the primary color (#007BFF).
+
+### Mid-Section:
+- **Main Content**: 
+  - **TrendChart**: Centrally positioned, taking up the upper half of the main content area. Interactive and dynamically updated based on filters.
+  - **PerformanceChart**: Positioned below the TrendChart, taking up the lower half of the main content area. Interactive and dynamically updated based on filters.
+  - **FilterControls**: Positioned at the top of the main content area, spanning the width of the page. Provides various filtering options to customize the data view.
+
+### Mid-Bottom:
+- **Additional Features**: 
+  - **DateRangePicker**: Positioned within the FilterControls, allowing users to select date ranges for analysis.
+  - **ChartLegend**: Positioned alongside charts, providing explanations of chart elements.
+
+### Bottom:
+- **Footer**: Contains navigation links and additional information about the application. Positioned at the bottom with a background color (#F8F9FA) and dark grey text (#212529).
+
+## 5. File and Component Structure
+
+### Integration:
+- **Instructions**: 
+  1. Import necessary components into `Analytics.js`.
+  2. Assemble components within the main layout.
+  3. Configure state management using `useState` and `useEffect`.
+- **Organize all related files within a single directory with the page name.**
+
+### File Paths:
+- **src/Analytics/Analytics.js**: Main file for the Analytics page.
+- **src/Analytics/TrendChart.js**: Component for displaying engagement trends.
+- **src/Analytics/PerformanceChart.js**: Component for visualizing performance metrics.
+- **src/Analytics/FilterControls.js**: Filtering controls for customizing data view.
+- **src/Analytics/DateRangePicker.js**: Date range picker component.
+- **src/Analytics/ChartLegend.js**: Legend component for charts.
+
+## 7. Enhancement Suggestions
+
+### Additional Functions or Features:
+- **Suggestions**:
+  - **Real-Time Data Updates**: Implement real-time data updates for charts using WebSockets or server-sent events. This ensures that users always see the most current data.
+  - **Advanced Filtering**: Add more advanced filtering options, such as multi-dimensional filtering and saved filter presets. This allows users to quickly apply complex filters.
+  - **Export Data**: Allow users to export chart data to CSV or Excel formats. This feature helps users share and analyze data outside the application.
+  - **Customizable Dashboards**: Enable users to create and save custom dashboards with their preferred charts and filters. This enhances the user experience by providing personalized views.
+  - **AI-Powered Insights**: Integrate AI algorithms to provide insights and recommendations based on the analyzed data. This adds value by offering actionable insights.
+
+By following these detailed instructions, you can create a highly functional and user-friendly Analytics page that meets the needs of analysts and account managers while providing innovative features and enhancements.

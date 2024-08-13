@@ -1,0 +1,126 @@
+
+***File Name***: models.py
+```python
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    role = models.CharField(max_length=50)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(auto_now=True)
+    
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='custom_user_set',
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+        verbose_name='groups',
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='custom_user_set',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions',
+    )
+
+class PurchaseOrder(models.Model):
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchase_orders')
+    order_date = models.DateTimeField(auto_now_add=True)
+    supplier_name = models.CharField(max_length=255)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=50)
+
+class PurchaseOrderItem(models.Model):
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name='items')
+    item_name = models.CharField(max_length=255)
+    quantity = models.IntegerField()
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+class Frame(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    material = models.CharField(max_length=255)
+    dimensions = models.CharField(max_length=255)
+    stock_quantity = models.IntegerField()
+
+class AssemblyTask(models.Model):
+    frame = models.ForeignKey(Frame, on_delete=models.CASCADE, related_name='assembly_tasks')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assembly_tasks')
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    duration = models.DurationField()
+    status = models.CharField(max_length=50)
+
+class GlazingTask(models.Model):
+    frame = models.ForeignKey(Frame, on_delete=models.CASCADE, related_name='glazing_tasks')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='glazing_tasks')
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    duration = models.DurationField()
+    status = models.CharField(max_length=50)
+
+class InstallationTask(models.Model):
+    frame = models.ForeignKey(Frame, on_delete=models.CASCADE, related_name='installation_tasks')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='installation_tasks')
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    duration = models.DurationField()
+    status = models.CharField(max_length=50)
+
+class WorkOrder(models.Model):
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='work_orders')
+    frame = models.ForeignKey(Frame, on_delete=models.CASCADE, related_name='work_orders')
+    description = models.TextField()
+    status = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+```
+***File Name***: serializers.py
+```python
+from rest_framework import serializers
+from .models import User, PurchaseOrder, PurchaseOrderItem, Frame, AssemblyTask, GlazingTask, InstallationTask, WorkOrder
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role', 'date_joined', 'last_login']
+
+class PurchaseOrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PurchaseOrderItem
+        fields = ['id', 'purchase_order', 'item_name', 'quantity', 'unit_price', 'total_price']
+
+class PurchaseOrderSerializer(serializers.ModelSerializer):
+    items = PurchaseOrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = PurchaseOrder
+        fields = ['id', 'created_by', 'order_date', 'supplier_name', 'total_amount', 'status', 'items']
+
+class FrameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Frame
+        fields = ['id', 'name', 'description', 'material', 'dimensions', 'stock_quantity']
+
+class AssemblyTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AssemblyTask
+        fields = ['id', 'frame', 'user', 'start_time', 'end_time', 'duration', 'status']
+
+class GlazingTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GlazingTask
+        fields = ['id', 'frame', 'user', 'start_time', 'end_time', 'duration', 'status']
+
+class InstallationTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InstallationTask
+        fields = ['id', 'frame', 'user', 'start_time', 'end_time', 'duration', 'status']
+
+class WorkOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkOrder
+        fields = ['id', 'assigned_to', 'frame', 'description', 'status', 'created_at', 'updated_at']
+```

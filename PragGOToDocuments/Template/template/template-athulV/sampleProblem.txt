@@ -1,0 +1,12 @@
+Inventory Overview:
+
+Display current stock levels for all products with options to search and filter by product, category, or warehouse.
+Show alerts for low stock and upcoming expiries.
+Batch Management:
+
+Track inventory by batch numbers and display expiry dates.
+Provide alerts for batches nearing expiry and allow for quick actions like reallocating stock or marking it for clearance.
+Warehouse Location Management:
+
+Manage and update the specific locations of products within the warehouse (aisle, shelf, bin).
+Offer optimized picking routes for order fulfillment based on product location within the warehouse.
